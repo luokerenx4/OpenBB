@@ -8,6 +8,7 @@ from openbb_yfinance.models.balance_sheet import YFinanceBalanceSheetFetcher
 from openbb_yfinance.models.cash_flow import YFinanceCashFlowStatementFetcher
 from openbb_yfinance.models.company_news import YFinanceCompanyNewsFetcher
 from openbb_yfinance.models.crypto_historical import YFinanceCryptoHistoricalFetcher
+from openbb_yfinance.models.crypto_search import YFinanceCryptoSearchFetcher
 from openbb_yfinance.models.currency_historical import YFinanceCurrencyHistoricalFetcher
 from openbb_yfinance.models.equity_historical import YFinanceEquityHistoricalFetcher
 from openbb_yfinance.models.equity_profile import YFinanceEquityProfileFetcher
@@ -50,6 +51,7 @@ financial markets and assets.""",
         "CashFlowStatement": YFinanceCashFlowStatementFetcher,
         "CompanyNews": YFinanceCompanyNewsFetcher,
         "CryptoHistorical": YFinanceCryptoHistoricalFetcher,
+        "CryptoSearch": YFinanceCryptoSearchFetcher,
         "CurrencyHistorical": YFinanceCurrencyHistoricalFetcher,
         "EquityActive": YFActiveFetcher,
         "EquityAggressiveSmallCaps": YFAggressiveSmallCapsFetcher,
