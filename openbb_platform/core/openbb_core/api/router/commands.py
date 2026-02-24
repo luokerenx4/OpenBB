@@ -22,7 +22,7 @@ from openbb_core.app.service.system_service import SystemService
 from openbb_core.app.service.user_service import UserService
 from openbb_core.env import Env
 from openbb_core.provider.utils.helpers import to_snake_case
-from pydantic import BaseModel
+from pydantic import BaseModel, SecretStr
 from typing_extensions import ParamSpec
 
 try:
@@ -128,6 +128,21 @@ def build_new_signature(path: str, func: Callable) -> Signature:
                 ),
             )
             var_kw_pos += 1
+
+    # --- Credential injection via header ---
+    new_parameter_list.insert(
+        var_kw_pos,
+        Parameter(
+            "__x_openbb_credentials",
+            kind=Parameter.POSITIONAL_OR_KEYWORD,
+            default=None,
+            annotation=Annotated[
+                str | None,
+                Header(alias="X-OpenBB-Credentials", include_in_schema=False),
+            ],
+        ),
+    )
+    var_kw_pos += 1
 
     if Env().API_AUTH:
         new_parameter_list.insert(
@@ -244,6 +259,19 @@ def build_api_wrapper(
                 UserService.read_from_file(),
             )
         )
+
+        # Merge credentials injected via X-OpenBB-Credentials header
+        _cred_header = kwargs.pop("__x_openbb_credentials", None)
+        if _cred_header:
+            import json as _json  # pylint: disable=import-outside-toplevel
+
+            try:
+                for _k, _v in _json.loads(_cred_header).items():
+                    if _v:
+                        setattr(user_settings.credentials, _k, SecretStr(_v))
+            except Exception:  # pylint: disable=broad-except
+                pass
+
         p = path.strip("/").replace("/", ".")
         defaults = (
             getattr(user_settings.defaults, "__dict__", {})
