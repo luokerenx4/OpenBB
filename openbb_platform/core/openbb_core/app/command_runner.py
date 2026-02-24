@@ -76,6 +76,8 @@ class ParametersBuilder:
 
         if "__authenticated_user_settings" in parameter_map:
             parameter_map.pop("__authenticated_user_settings")
+        if "__x_openbb_credentials" in parameter_map:
+            parameter_map.pop("__x_openbb_credentials")
 
         parameter_list = list(parameter_map.values())
         new_signature = signature(func).replace(parameters=parameter_list)
